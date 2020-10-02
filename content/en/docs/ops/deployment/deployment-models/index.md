@@ -270,7 +270,6 @@ The simplest Istio deployment is a single mesh. A single mesh can span
 [one or more clusters](#cluster-models) and [one or more networks](#network-models).
 All workloads in a mesh share a common certificate authority. You can choose to use a single shared
   trust domain or a separate trust domain for each cluster.
-  
 If you use a single shared trust domain, a service account in a given namespace is globally unique - i.e. if
 two clusters `cluster-1` and `cluster-2` have the same service account `foo` in namespace `ns`, they will be
 treated the same for purposes of security. With a trust domain for each cluster, there are no
