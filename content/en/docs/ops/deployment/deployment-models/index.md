@@ -29,10 +29,6 @@ or are there multiple control planes deployed to ensure high availability (HA)?
 Are all clusters going to be connected into a single {{< gloss >}}multicluster{{< /gloss >}}
 service mesh or will they be federated into a {{< gloss >}}multi-mesh{{< /gloss >}} deployment?
 
-## Definition of a Mesh in Istio
-
-Before answering the questions above, it is imperative to understand the [definition of a mesh](/docs/reference/glossary/#service-mesh) in Istio. As defined in the glossary, the identities within a single mesh share the same root of trust.
-
 Deploying a `single Istio mesh` involves three independent dimensions of configuration:
 
 1. single or multiple cluster
@@ -217,7 +213,7 @@ data plane services that comprise the mesh.
 
 A cloud vendor's {{< gloss >}}managed control plane{{< /gloss >}} is a typical example of an external control plane.
 
-For high availability, you should deploy one control plane in each zone/region or sets of clusters, and
+For high availability, you should deploy one control plane in each zone/region or set of clusters, and
 ensure that configuration is replicated across all control planes.
 
 {{< image width="75%"
@@ -235,7 +231,7 @@ This model affords the following benefits:
 - Improved configuration isolation: Configuration changes in one control plane affects only
 the workloads in clusters managed by this control plane.
 
-### Independent Control Planes
+### Control Plane Per Cluster
 
 For maximum availability and configuration isolation you can deploy a control plane in each cluster. Each cluster's control plane
 manages only the workloads in its own cluster. If the control plane is unavailable (due to upgrade or
@@ -331,7 +327,7 @@ allows workload instances in the mesh to authenticate each other when communicat
 
 If a service in a mesh requires a service in another, you must federate identity
 and trust between the two meshes. To federate identity and trust, you must
-exchange the trust bundles of the meshes. You can exchange the trust bundles
+exchange the trust bundles of the meshes. Istio does not provide any tooling to exchange trust bundles across meshes. You can exchange the trust bundles
 either manually or automatically using a protocol such as [SPIFFE Trust Domain Federation](https://docs.google.com/document/d/1OC9nI2W04oghhbEDJpKdIUIw-G23YzWeHZxwGLIkB8k/edit).
 Once you import a trust bundle to a mesh, you can configure local policies for
 those identities.
@@ -343,10 +339,10 @@ those identities.
     caption="Multiple service meshes with certificate authorities"
     >}}
 
-## Isolating teams within the mesh
+## Tenancy Models in Istio
 
 You can achieve a great
-level of isolation across different teams through the use of different namespaces or even separate clusters.
+level of isolation across different teams through the use of different namespaces, or separate clusters, or even separate meshes.
 Such soft tenancy models can be used to satisfy the following organizational requirements for isolation:
 
 - Security
@@ -355,12 +351,13 @@ Such soft tenancy models can be used to satisfy the following organizational req
 - Cost
 - Performance
 
-Istio supports two types of soft-tenancy models:
+Istio supports three types of soft-tenancy models:
 
-- [Namespace isolation](#namespace-isolation)
-- [Cluster isolation](#cluster-isolation)
+- [Namespace tenancy](#namespace-tenancy)
+- [Cluster tenancy](#cluster-tenancy)
+- [Mesh tenancy](#cluster-tenancy)
 
-### Namespace isolation
+### Namespace Tenancy
 
 By default, services from multiple namespaces can communicate with each other. If a
 single cluster is shared across many teams operating in different namespaces,
@@ -375,9 +372,16 @@ appropriate callers.
     caption="A service mesh with two namespaces and an exposed service"
     >}}
 
-### Cluster isolation
+### Cluster Tenancy
 
-You can also use the cluster as the unit of isolation in a mesh by giving each team
+You can use the cluster as the unit of isolation in a mesh by giving each team
 a dedicated cluster, with its [own control plane](#independent-control-plane) allowing
 them to manage their own configurations. Alternatively, if you can ensure that namespaces
 are globally unique across clusters, you can use a shared control plane.
+
+### Mesh Tenancy
+
+In a multi-mesh deployment with {{< gloss >}}mesh federation{{< /gloss >}}, each mesh 
+can be used as the unit of isolation. If cross mesh communication is desired, trust 
+between two meshes must be established through exchange of trust bundles. See the section 
+on [Multiple Trust Domains](#trust-between-meshes) for more details.
