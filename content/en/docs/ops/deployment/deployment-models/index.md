@@ -294,7 +294,7 @@ When federating two meshes that do not share the same
 {{< gloss >}}trust domain{{< /gloss >}}, you must
 {{< gloss "mesh federation">}}federate{{< /gloss >}}
 {{< gloss >}}identity{{< /gloss >}} and **trust bundles** between them. See the
-section on [Multiple Trust Domains](#trust-between-meshes) for an overview.
+section on [Trust between meshes](#trust-between-meshes) for an overview.
 
 ## Identity and trust models
 
@@ -355,7 +355,7 @@ Istio supports three types of soft-tenancy models:
 
 - [Namespace tenancy](#namespace-tenancy)
 - [Cluster tenancy](#cluster-tenancy)
-- [Mesh tenancy](#cluster-tenancy)
+- [Mesh tenancy](#mesh-tenancy)
 
 ### Namespace Tenancy
 
@@ -384,4 +384,4 @@ are globally unique across clusters, you can use a shared control plane.
 In a multi-mesh deployment with {{< gloss >}}mesh federation{{< /gloss >}}, each mesh 
 can be used as the unit of isolation. If cross mesh communication is desired, trust 
 between two meshes must be established through exchange of trust bundles. See the section 
-on [Multiple Trust Domains](#trust-between-meshes) for more details.
+on [Trust between meshes](#trust-between-meshes) for more details.
